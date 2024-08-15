@@ -10,6 +10,14 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@/*": ["*"],
+      "@App/*": ["src/*"]
+    },
+    "typeRoots": [
+      "./src/@types",
+      "./node_modules/@types"
+    ],
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -17,5 +25,14 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "include": [
+    "src/**/*",
+    "typings.d.ts",
+    "express.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
 }
