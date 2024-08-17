@@ -36,7 +36,7 @@ This is a RESTful API project built with **NestJS** to manage movies and genres.
 
 ### Prerequisites
 
-- Node.js >= 14
+- Node.js >= 20
 - MySQL
 - npm or yarn
 
