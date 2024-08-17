@@ -1,12 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
-import { Movie } from './movie.entity';
+import { Movie } from '../../entities/movie.entity';
 
-@Entity()
+@Entity('genres')
 export class Genre {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   name: string;
 
   @ManyToMany(() => Movie, movie => movie.genres)

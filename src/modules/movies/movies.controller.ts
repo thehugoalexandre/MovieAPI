@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards, Query } from '@nestjs/common';
 import { MoviesService } from './movies.service';
-import { IsOwnerGuard } from '@/src/http/guards/is-owner.guard';
 import { UpdateMovieDto } from './dto/update-movie.dto';
-import { ResourceType } from '@/src/http/common/decorators/resource-type.decorator';
+import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/src/http/guards/jwt.guard';
+import { Movie } from './entities/movie.entity';
 
+@ApiTags('Movies')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('movies')
 export class MoviesController {
     constructor(private readonly moviesService: MoviesService) { }
 
-    @Get()
-    findAll() {
-        return this.moviesService.findAll();
-    }
 
     @Post()
     create(@Body() createMovieDto: any) {
         return this.moviesService.create(createMovieDto);
     }
 
-    // @UseGuards(IsOwnerGuard)
-    // @ResourceType('movie')
+    @Get('all')
+    findAll(@Query('skip') skip = 0, @Query('take') take = 10) {
+        return this.moviesService.findAll(Number(skip), Number(take));
+    }
+
     @Patch(':id')
     update(@Param('id') id: number, @Body() updateMovieDto: UpdateMovieDto) {
         return this.moviesService.update(id, updateMovieDto);
     }
 
-    // @UseGuards(IsOwnerGuard)
-    // @ResourceType('movie')
     @Delete(':id')
     delete(@Param('id') id: number) {
         return this.moviesService.delete(id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('search')
+    search(@Query('title') title: string, @Query('genreIds') genreIds: number[]): Promise<Movie[]> {
+        return this.moviesService.search(title, genreIds);
     }
 }

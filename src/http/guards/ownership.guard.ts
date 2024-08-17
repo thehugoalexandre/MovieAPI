@@ -4,7 +4,7 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
-export class IsOwnerGuard implements CanActivate {
+export class OwnershipGuard implements CanActivate {
     constructor(
         private reflector: Reflector,
         private usersService: UsersService,
@@ -14,7 +14,7 @@ export class IsOwnerGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        const resourceId = parseInt(request.params.id);
+        const resourceId = request.params.id;
         const resourceType = this.reflector.get<string>('resourceType', context.getHandler());
 
         if (resourceType === 'user') {

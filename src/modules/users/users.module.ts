@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { User } from './entities/user.entity';
-import { IsOwnerGuard } from '@/src/http/guards/is-owner.guard';
+import { OwnershipGuard } from '@/src/http/guards/ownership.guard';
 import { MoviesModule } from '../movies/movies.module';
 
 @Module({
@@ -12,7 +12,7 @@ import { MoviesModule } from '../movies/movies.module';
         MoviesModule,
     ],
     controllers: [UsersController],
-    providers: [UsersService, IsOwnerGuard],
+    providers: [UsersService, OwnershipGuard],
     exports: [UsersService],
 })
 export class UsersModule { }
