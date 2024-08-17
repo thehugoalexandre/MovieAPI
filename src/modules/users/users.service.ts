@@ -22,45 +22,51 @@ export class UsersService {
 
         const user = this.usersRepository.create(registerDto);
         const savedUser = await this.usersRepository.save(user);
+
         return this.toUserResponseDto(savedUser);
+    }
+
+    async findAll(): Promise<User[]> {
+        return this.usersRepository.find();
     }
 
     async findByEmail(email: string): Promise<User | undefined> {
         return this.usersRepository.findOne({ where: { email } });
     }
 
-    async findById(id: number): Promise<UserResponseDto> {
-        const user = await this.usersRepository.findOne({ where: { id: String(id) } });
+    async findById(id: string): Promise<UserResponseDto> {
+        const user = await this.usersRepository.findOne({ where: { id } });
         if (!user) {
             throw new NotFoundException(`User with ID ${id} not found`);
         }
         return this.toUserResponseDto(user);
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
-        let user = await this.usersRepository.findOne({ where: { id: String(id) } });
+    async update(id: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
+        let user = await this.usersRepository.findOne({ where: { id } });
         if (!user) {
             throw new NotFoundException(`User with ID ${id} not found`);
         }
 
-        if (updateUserDto.password) {
-            updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+        if (updateUserDto.name) {
+            user.name = updateUserDto.name;
         }
 
-        user = this.usersRepository.merge(user, updateUserDto);
         const updatedUser = await this.usersRepository.save(user);
 
         return this.toUserResponseDto(updatedUser);
     }
 
     async delete(id: number): Promise<void> {
-        const result = await this.usersRepository.delete(id);
-        if (result.affected === 0) {
+        const user = await this.usersRepository.findOne({ where: { id: id.toString() } });
+        if (!user) {
             throw new NotFoundException(`User with ID ${id} not found`);
         }
+
+        await this.usersRepository.delete(id);
     }
 
-    private toUserResponseDto(user: User): UserResponseDto {
+    public toUserResponseDto(user: User): UserResponseDto {
         return {
             id: user.id,
             name: user.name,

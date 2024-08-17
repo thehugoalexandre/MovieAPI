@@ -1,73 +1,124 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Movie API - NestJS Backend Project
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is a RESTful API project built with **NestJS** to manage movies and genres. The API allows CRUD operations on movies and genres, as well as performing searches based on titles and genres. Additionally, a JWT-based authentication system has been implemented to secure the endpoints.
+
+## Features
+
+- **JWT Authentication**: User registration, Sign In (login), and endpoint protection with JWT tokens.
+- **Movies CRUD**:
+  - Add, list, update, and delete movies.
+  - Associate genres with movies.
+  - Search for movies by title and/or genre.
+- **Genres CRUD**:
+  - Add, list, and delete genres.
+- **Pagination**: Implemented for movie listings.
+- **Logging Middleware**: Logs incoming requests, including information about the authenticated user.
+- **Swagger Documentation**: Complete API documentation with detailed endpoint descriptions.
+
+## Technologies Used
+
+- **NestJS**: Framework for building scalable Node.js applications.
+- **TypeScript**: Programming language used for development.
+- **MySQL**: Relational database used.
+- **TypeORM**: ORM used for database interactions.
+- **JWT (JSON Web Token)**: Secure token-based authentication.
+- **Winston**: Logging library for capturing and storing logs.
+- **Swagger**: Tool for documenting RESTful APIs.
 
 ## Installation
 
-```bash
-$ npm install
-```
+### Prerequisites
 
-## Running the app
+- Node.js >= 14
+- MySQL
+- npm or yarn
 
-```bash
-# development
-$ npm run start
+### Steps
 
-# watch mode
-$ npm run start:dev
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/thehugoalexandre/MovieAPI.git
+   cd movie-api
+   ```
 
-# production mode
-$ npm run start:prod
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Test
+3. Configure the environment:
+   - Create or use the `.env` file at the root of the project
 
-```bash
-# unit tests
-$ npm run test
+4. Run database migrations:
+   ```bash
+   npm run typeorm migration:run
+   ```
 
-# e2e tests
-$ npm run test:e2e
+5. Start the server:
+   ```bash
+   npm run start:dev
+   ```
 
-# test coverage
-$ npm run test:cov
-```
+## Usage
 
-## Support
+### API Documentation (Swagger)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+After starting the server, go to `http://localhost:3000/api` to view the API documentation generated by Swagger. This documentation provides clear and objective descriptions for each endpoint.
 
-## Stay in touch
+### Example Requests
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+1. **Register User**:
+   - Method: `POST`
+   - Endpoint: `v1/auth/signup`
+   - Body:
+     ```json
+     {
+       "name": "Hugo",
+       "email": "hugo@example.com",
+       "password": "Password@123"
+     }
+     ```
+
+2. **Authentication (Login)**:
+   - Method: `POST`
+   - Endpoint: `v1/auth/signin`
+   - Body:
+     ```json
+     {
+       "email": "hugo@example.com",
+       "password": "Password@123"
+     }
+     ```
+
+3. **Add Movie**:
+   - Method: `POST`
+   - Endpoint: `v1/movies`
+   - Body:
+     ```json
+     {
+       "title": "Inception",
+       "description": "A mind-bending thriller",
+       "releaseDate": "2010-07-16",
+       "genres": [1, 2]
+     }
+     ```
+
+### Postman Collection
+
+You can use the following link to import the Postman collection for testing the API endpoints:
+[Postman Collection](https://api.postman.com/collections/27646716-6464318d-9b41-4a9d-968a-4e7858b6f08a?access_key=PMAT-01J5BNX6PKNN423QNJ3S8VMQFR)
+
+## Contribution
+
+Contributions are welcome! Please open an issue or submit a pull request to suggest improvements or report bugs.
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.

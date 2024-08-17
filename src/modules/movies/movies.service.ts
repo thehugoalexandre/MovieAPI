@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Movie } from './entities/movie.entity';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { CreateMovieDto } from './dto/create-movie.dto';
-import { Genre } from './genres/entities/genre.entity';
 import { GenresService } from './genres/genres.service';
 
 @Injectable()
@@ -16,10 +15,16 @@ export class MoviesService {
     ) { }
 
     async create(movieData: CreateMovieDto): Promise<Movie> {
+        // const existingMovie = await this.moviesRepository.findOne({ where: { title: movieData.title } });
+        // if (existingMovie) {
+        //     throw new ConflictException('This title already exists.');
+        // }
+
         const genres = await this.genresService.findByIds(movieData.genres);
         if (genres.length !== movieData.genres.length) {
-            throw new Error('Some genres not found');
+            throw new BadRequestException('Some genres not found.');
         }
+
         const movie = this.moviesRepository.create({
             title: movieData.title,
             description: movieData.description,
@@ -28,6 +33,7 @@ export class MoviesService {
         });
         return this.moviesRepository.save(movie);
     }
+
 
     async findAll(skip = 0, take = 10): Promise<Movie[]> {
         return this.moviesRepository.find({
@@ -40,17 +46,19 @@ export class MoviesService {
     async findOne(id: number): Promise<Movie> {
         const movie = await this.moviesRepository.findOne({ where: { id }, relations: ['genres'] });
         if (!movie) {
-            throw new Error('Movie not found');
+            throw new NotFoundException(`Movie with ID ${id} not found.`);
         }
         return movie;
     }
 
     async update(id: number, updateMovieDto: UpdateMovieDto): Promise<Movie> {
         const movie = await this.findOne(id);
+
         const genres = await this.genresService.findByIds(updateMovieDto.genres);
         if (genres.length !== updateMovieDto.genres.length) {
-            throw new Error('Some genres not found');
+            throw new BadRequestException('Some genres not found.');
         }
+
         return this.moviesRepository.save({ ...movie, ...updateMovieDto, genres });
     }
 
@@ -58,21 +66,31 @@ export class MoviesService {
     async delete(id: number): Promise<void> {
         const movie = await this.findOne(id);
         if (!movie) {
-            throw new Error('Movie not found');
+            throw new NotFoundException(`Movie with ID ${id} not found.`);
         }
+
         await this.moviesRepository.delete(id);
     }
 
-
-    async search(title: string, genreIds: number[]): Promise<Movie[]> {
+    async search(title?: string, genreIds?: number[]): Promise<Movie[]> {
         const query = this.moviesRepository.createQueryBuilder('movie')
-            .leftJoinAndSelect('movie.genres', 'genre')
-            .where('movie.title LIKE :title', { title: `%${title}%` });
+            .leftJoinAndSelect('movie.genres', 'genre');
 
-        if (genreIds.length) {
+        if (title) {
+            query.andWhere('movie.title LIKE :title', { title: `%${title}%` });
+        }
+
+        if (genreIds && genreIds.length > 0) {
             query.andWhere('genre.id IN (:...genreIds)', { genreIds });
         }
-        return await query.getMany();
+
+        const movies = await query.getMany();
+
+        if (movies.length === 0) {
+            throw new NotFoundException('No movies found matching the search criteria.');
+        }
+
+        return movies;
     }
 
 }

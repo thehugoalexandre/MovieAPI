@@ -17,7 +17,7 @@ export class UpdateMovieDto {
   @IsOptional()
   releaseDate?: Date;
 
-  @ApiPropertyOptional({ example: [1, 2], description: 'Array of genre IDs associated with the movie' })
+  @ApiPropertyOptional({ example: [1], description: 'Array of genre IDs associated with the movie' })
   @IsArray()
   @IsOptional()
   genres?: number[];

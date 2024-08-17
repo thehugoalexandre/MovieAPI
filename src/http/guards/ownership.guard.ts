@@ -1,18 +1,30 @@
-import { UsersService } from '@/src/modules/users/users.service';
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class OwnershipGuard implements CanActivate {
     constructor(
-        private usersService: UsersService,
+        private readonly jwtService: JwtService,
+        private readonly reflector: Reflector
     ) { }
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
+    canActivate(context: ExecutionContext): boolean {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        const resourceId = request.params.id;
+        const userId = request.params.id;
 
-        const userEntity = await this.usersService.findById(resourceId);
-        return userEntity && userEntity.id === user.id;
+        // console.log(`Authenticated User ID: ${user.id}`);
+        // console.log(`Requested User ID: ${userId}`);
+
+        if (!user || !userId) {
+            throw new ForbiddenException('You are not allowed to access this resource');
+        }
+
+        if (String(user.id) !== String(userId)) {
+            throw new ForbiddenException('You are not allowed to access this resource');
+        }
+
+        return true;
     }
 }

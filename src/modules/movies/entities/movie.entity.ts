@@ -15,7 +15,7 @@ export class Movie {
   @Column({ nullable: false })
   releaseDate: Date;
 
-  @ManyToMany(() => Genre, genre => genre.movies, { cascade: true })
+  @ManyToMany(() => Genre, genre => genre.movies, { cascade: true, onDelete: 'CASCADE' })
   @JoinTable()
   genres: Genre[];
 }
