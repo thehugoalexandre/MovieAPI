@@ -56,12 +56,15 @@ This is a RESTful API project built with **NestJS** to manage movies and genres.
 3. Configure the environment:
    - Create or use the `.env` file at the root of the project
 
-4. Run database migrations:
+4. Database:
+   - Before starting the server, ensure the database specified in the `.env` file is created. The `TypeOrmModule` is configured with `synchronize: true`, so tables will be automatically created without needing migrations.
+
+5. Run database migrations:
    ```bash
    npm run typeorm migration:run
    ```
 
-5. Start the server:
+6. Start the server:
    ```bash
    npm run start:dev
    ```
