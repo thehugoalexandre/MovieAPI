@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -12,12 +12,19 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) { }
 
   async signUp(signUpDto: SignUpDto) {
-    const user = await this.usersService.create(signUpDto);
-    return this.generateTokens(user);
+    try {
+      const user = await this.usersService.create(signUpDto);
+      return this.generateTokens(user);
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new ConflictException('Email already in use');
+      }
+      throw error;
+    }
   }
 
   async signIn(signInDto: SignInDto) {
@@ -31,7 +38,7 @@ export class AuthService {
   private generateTokens(user: any) {
     const payload: JwtPayload = {
       id: user.id,
-      email: user.email
+      email: user.email,
     };
     const accessToken = this.jwtService.sign(payload);
     return { accessToken };

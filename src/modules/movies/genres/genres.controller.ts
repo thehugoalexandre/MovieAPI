@@ -2,7 +2,10 @@ import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/c
 import { GenresService } from './genres.service';
 import { JwtAuthGuard } from '@/src/http/guards/jwt.guard';
 import { Genre } from './entities/genre.entity';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Genres')
+@ApiBearerAuth()
 @Controller('genres')
 export class GenresController {
     constructor(private readonly genresService: GenresService) { }

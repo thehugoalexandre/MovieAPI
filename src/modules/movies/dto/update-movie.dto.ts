@@ -1,19 +1,24 @@
-import { IsString, IsDateString, IsArray, IsNotEmpty } from 'class-validator';
+import { IsString, IsDateString, IsArray, IsOptional } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateMovieDto {
+  @ApiPropertyOptional({ example: 'Inception', description: 'The title of the movie' })
   @IsString()
-  @IsNotEmpty()
-  title: string;
+  @IsOptional()
+  title?: string;
 
+  @ApiPropertyOptional({ example: 'A mind-bending thriller', description: 'The description of the movie' })
   @IsString()
-  @IsNotEmpty()
-  description: string;
+  @IsOptional()
+  description?: string;
 
+  @ApiPropertyOptional({ example: '2010-07-16', description: 'The release date of the movie' })
   @IsDateString()
-  @IsNotEmpty()
-  releaseDate: Date;
+  @IsOptional()
+  releaseDate?: Date;
 
+  @ApiPropertyOptional({ example: [1, 2], description: 'Array of genre IDs associated with the movie' })
   @IsArray()
-  @IsNotEmpty({ each: true })
-  genres: number[];
+  @IsOptional()
+  genres?: number[];
 }

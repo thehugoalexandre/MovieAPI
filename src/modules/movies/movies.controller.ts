@@ -4,6 +4,7 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 import { ApiBearerAuth, ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/src/http/guards/jwt.guard';
 import { Movie } from './entities/movie.entity';
+import { CreateMovieDto } from './dto/create-movie.dto';
 
 @ApiTags('Movies')
 @ApiBearerAuth()
@@ -12,9 +13,8 @@ import { Movie } from './entities/movie.entity';
 export class MoviesController {
     constructor(private readonly moviesService: MoviesService) { }
 
-
     @Post()
-    create(@Body() createMovieDto: any) {
+    create(@Body() createMovieDto: CreateMovieDto) {
         return this.moviesService.create(createMovieDto);
     }
 
